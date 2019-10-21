@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-// Server is like http.Server, but doesn't prematurely kill http2 connections
-// on Shutdown. See below.
+// Server is like http.Server, but doesn't prematurely kill http2 connections on
+// Shutdown. See below.
 type Server struct {
 	http.Server
 	activeHandlersWg sync.WaitGroup
@@ -34,9 +34,8 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	// TODO Why do we need this to avoid an unexpected EOF?
 	// Hunch without any investigation: when the handler function returns we
 	// haven't completely finished cleanly closing the stream, so if we don't
-	// wait for a moment Server.Shutdown will still aggresively close it's
-	// connections, which will result in an EOF. Is a millisecond always
-	// enough?
+	// wait for a moment Server.Shutdown will still aggresively close its
+	// connections, which will result in an EOF. Is a millisecond always enough?
 	time.Sleep(time.Millisecond)
 	return s.Server.Shutdown(ctx)
 }
